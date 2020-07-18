@@ -902,8 +902,11 @@ function handle_kana_input(dik)
             end
 
             if (not (is_valid_punctuation(keystroke))) then
-                merge_into_romaji_buffer(keystroke_buffer, romaji_insertion_offset)
-                move_romaji_offset_right()
+                local split_keystroke_buffer = hiragana.maybe_split_compound_character(keystroke_buffer)
+                for i, romaji in ipairs(split_keystroke_buffer) do
+                    merge_into_romaji_buffer(romaji, romaji_insertion_offset)
+                    move_romaji_offset_right()
+                end
             end
 
             clear_keystroke_buffer()

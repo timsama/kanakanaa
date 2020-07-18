@@ -33,6 +33,9 @@ katakana["xi"] = "ィ"
 katakana["xu"] = "ゥ"
 katakana["xe"] = "ェ"
 katakana["xo"] = "ォ"
+katakana["xya"] = "ャ"
+katakana["xyu"] = "ュ"
+katakana["xyo"] = "ョ"
 -- small tsu
 katakana["xtsu"] = "ッ"
 katakana["xtu"] = "ッ"
@@ -272,6 +275,71 @@ katakana.from_romaji = (function(romaji_buffer)
         end
     end
     return output
+end)
+
+local compound_characters = {}
+compound_characters["kya"] = L{"ki", "xya"}
+compound_characters["kyu"] = L{"ki" , "xyu"}
+compound_characters["kyo"] = L{"ki" , "xyo"}
+compound_characters["gya"] = L{"gi" , "xya"}
+compound_characters["gyu"] = L{"gi" , "xyu"}
+compound_characters["gyo"] = L{"gi" , "xyo"}
+compound_characters["sya"] = L{"si" , "xya"}
+compound_characters["syu"] = L{"si" , "xyu"}
+compound_characters["syo"] = L{"si" , "xyo"}
+compound_characters["shya"] = L{"shi" , "xya"}
+compound_characters["shyu"] = L{"shi" , "xyu"}
+compound_characters["shyo"] = L{"shi" , "xyo"}
+compound_characters["sha"] = L{"shi" , "xya"}
+compound_characters["shu"] = L{"shi" , "xyu"}
+compound_characters["sho"] = L{"shi" , "xyo"}
+compound_characters["zya"] = L{"zi" , "xya"}
+compound_characters["zyu"] = L{"zi" , "xyu"}
+compound_characters["zyo"] = L{"zi" , "xyo"}
+compound_characters["jya"] = L{"ji" , "xya"}
+compound_characters["jyu"] = L{"ji" , "xyu"}
+compound_characters["jyo"] = L{"ji" , "xyo"}
+compound_characters["ja"] =  L{"ji", "xya"}
+compound_characters["ju"] =  L{"ji", "xyu"}
+compound_characters["jo"] =  L{"ji", "xyo"}
+compound_characters["tya"] = L{"ti" , "xya"}
+compound_characters["tyu"] = L{"ti" , "xyu"}
+compound_characters["tyo"] = L{"ti" , "xyo"}
+compound_characters["cha"] = L{"chi" , "xya"}
+compound_characters["chu"] = L{"chi" , "xyu"}
+compound_characters["che"] = L{"chi" , "xye"}
+compound_characters["cho"] = L{"chi" , "xyo"}
+compound_characters["dya"] = L{"di" , "xya"}
+compound_characters["dyu"] = L{"di" , "xyu"}
+compound_characters["dyo"] = L{"di" , "xyo"}
+compound_characters["dja"] = L{"di" , "xya"}
+compound_characters["dju"] = L{"di" , "xyu"}
+compound_characters["djo"] = L{"di" , "xyo"}
+compound_characters["nya"] = L{"ni" , "xya"}
+compound_characters["nyu"] = L{"ni" , "xyu"}
+compound_characters["nyo"] = L{"ni" , "xyo"}
+compound_characters["hya"] = L{"hi" , "xya"}
+compound_characters["hyu"] = L{"hi" , "xyu"}
+compound_characters["hyo"] = L{"hi" , "xyo"}
+compound_characters["bya"] = L{"bi" , "xya"}
+compound_characters["byu"] = L{"bi" , "xyu"}
+compound_characters["byo"] = L{"bi" , "xyo"}
+compound_characters["pya"] = L{"pi" , "xya"}
+compound_characters["pyu"] = L{"pi" , "xyu"}
+compound_characters["pyo"] = L{"pi" , "xyo"}
+compound_characters["mya"] = L{"mi" , "xya"}
+compound_characters["myu"] = L{"mi" , "xyu"}
+compound_characters["myo"] = L{"mi" , "xyo"}
+compound_characters["rya"] = L{"ri" , "xya"}
+compound_characters["ryu"] = L{"ri" , "xyu"}
+compound_characters["ryo"] = L{"ri" , "xyo"}
+
+katakana.maybe_split_compound_character = (function(keystroke_buffer)
+    if (compound_characters[keystroke_buffer] ~= nil) then
+        return compound_characters[keystroke_buffer]
+    else
+        return L{keystroke_buffer}
+    end
 end)
 
 return katakana
