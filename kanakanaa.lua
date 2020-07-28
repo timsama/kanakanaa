@@ -23,7 +23,7 @@
 -- Addon description
 _addon.name = "KanaKanaa Japanese IME"
 _addon.author = "Tim Winchester"
-_addon.version = "0.1.1"
+_addon.version = "0.1.2"
 _addon.language = "english"
 _addon.commands = {"kanakanaa", "kkn"}
 
@@ -566,6 +566,22 @@ windower.register_event("addon command", function(command, ...)
         end
     end
 end)
+
+-- ON LOGIN
+windower.register_event("login", function()
+    is_zoning = false
+    local should_display = get_should_display(pending_buffer, romaji_buffer, keystroke_buffer)
+    Ui.display(should_display)
+    Ui.ModeIndicator.show()
+end)
+
+-- ON LOGOUT
+windower.register_event("logout", function()
+    is_zoning = true
+    Ui.display(false)
+    Ui.ModeIndicator.hide()
+end)
+
 
 local last_chat_text = ""
 
