@@ -1,4 +1,5 @@
 {
     "localefile": "keymap/en-US",
     "panickey": "K",
+    "chatbarwidth": null,
 }

@@ -534,6 +534,38 @@ function maybe_update_chat_mode(pending_buffer)
     end
 end
 
+function set_chat_bar_width(width)
+    local can_write = width == nil or type(width) == "number"
+
+    if (can_write) then
+        CONFIG.chatbarwidth = width
+        jsonfiles.write("config/config.json", CONFIG)
+    end
+
+    return can_write
+end
+
+-- ON COMMAND
+windower.register_event("addon command", function(command, ...)
+    local args = L{...}
+
+    if (command == "set") then
+        if (args[1] == "chatbarwidth") then
+            local new_width = args[2]
+            if (new_width == "nil" or new_width == "null") then
+                new_width = nil
+            else
+                new_width = tonumber(new_width)
+            end
+            local was_successful = set_chat_bar_width(new_width)
+            if (was_successful) then
+                Ui.set_chat_bar_width(new_width)
+            else
+                windower.send_command("@input /echo " .. new_width .. " is not a valid width. (Allowed values: number or nil)")
+            end
+        end
+    end
+end)
 
 local last_chat_text = ""
 

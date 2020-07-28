@@ -29,6 +29,10 @@ local kanji = require("kanji")
 local autotranslate = require("autotranslate")
 local utf8slim = require("utf8slim")
 
+
+local jsonfiles = require("jsonfiles")
+local CONFIG = jsonfiles.read("config/config.json")
+
 local ZERO_WIDTH_SPACE = "​" -- Yes, there really is a character in between the quotes
 local HAIRLINE_SPACE = " "
 
@@ -167,11 +171,20 @@ Autotranslate.settings.colors.bg.alpha = 255
 Autotranslate.text = texts.new(Autotranslate.settings.text, Autotranslate.settings)
 
 local chat_bg = images.new()
+
+Ui.set_chat_bar_width = (function(width)
+    if (width ~= nil) then
+        chat_bg:size(width, 16)
+    else
+        chat_bg:size(windower.get_windower_settings().ui_x_res - 150, 16)
+    end
+end)
+
 chat_bg:repeat_xy(1, 1)
 chat_bg:draggable(false)
 chat_bg:alpha(255)
 chat_bg:pos(18, windower.get_windower_settings().ui_y_res - 36)
-chat_bg:size(windower.get_windower_settings().ui_x_res - 150, 16)
+Ui.set_chat_bar_width(CONFIG.chatbarwidth)
 chat_bg:fit(false)
 chat_bg:path(windower.addon_path .. "/img/black.png")
 chat_bg:hide()
