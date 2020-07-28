@@ -43,6 +43,7 @@ local utf8slim = require("utf8slim")
 -- Import Delivery Box
 local deliverybox = require("lib/deliverybox")
 local chatmodes = require("lib/chatmodes")
+local zone = require("lib/zone")
 
 -- Import UI pieces
 local Ui = require("ui")
@@ -60,6 +61,7 @@ local keymap = require("keymap/keymap")
 
 -- State variables
 local kana_mode = false
+local is_zoning = false
 local autotranslate_mode = false
 local ctrl_down = false
 local shift_down = false
@@ -111,6 +113,10 @@ function is_valid_punctuation(keystroke)
     return punctuation_map[keystroke]
 end
 
+function get_should_display(pending_buffer, romaji_buffer, keystroke_buffer)
+    return (#pending_buffer > 0 or #romaji_buffer > 0 or #keystroke_buffer > 0) and kana_mode and not is_zoning
+end
+
 deliverybox.register_event("on open send", (function()
     if (kana_mode) then
         should_restore_kana_mode_after_delivery = true
@@ -125,6 +131,19 @@ deliverybox.register_event("on close", (function()
         kana_mode = true
         Ui.ModeIndicator.activate_kana_mode()
     end
+end))
+
+zone.register_event("on leave", (function()
+    is_zoning = true
+    Ui.display(false)
+    Ui.ModeIndicator.hide()
+end))
+
+zone.register_event("on enter", (function()
+    is_zoning = false
+    local should_display = get_should_display(pending_buffer, romaji_buffer, keystroke_buffer)
+    Ui.display(should_display)
+    Ui.ModeIndicator.show()
 end))
 
 function should_split_connector(kana, next_character, preceding_part_of_speech)
@@ -522,6 +541,10 @@ local last_chat_text = ""
 windower.register_event("keyboard", function(dik, pressed, flags, blocked)
     -- windower.send_command("@input /echo "..dik)
 
+    if (is_zoning) then
+        return false
+    end
+
     if (dik == keymap.ctrl) then
         ctrl_down = pressed
     end
@@ -543,7 +566,7 @@ windower.register_event("keyboard", function(dik, pressed, flags, blocked)
         Ui.ModeIndicator.deactivate_kana_mode()
     end
 
-    local should_display = (#pending_buffer > 0 or #romaji_buffer > 0 or #keystroke_buffer > 0) and kana_mode
+    local should_display = get_should_display(pending_buffer, romaji_buffer, keystroke_buffer)
     Ui.display(should_display)
 
     if (kana_mode and windower.chat.is_open()) then

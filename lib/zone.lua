@@ -20,42 +20,38 @@
 -- SOFTWARE.
 --
 
-local defaults = require("defaults")
+local packets = require("packets")
+require("tables")
 
-local ModeIndicator = {}
+local callback = require("lib/callback")
 
-local mode_indicator_settings = {}
-mode_indicator_settings.pos = {}
-mode_indicator_settings.pos.x = 0
-mode_indicator_settings.pos.y = windower.get_windower_settings().ui_y_res - 36
-mode_indicator_settings.bg = {}
-mode_indicator_settings.bg.alpha = 255
-mode_indicator_settings.bg.blue = 255
-mode_indicator_settings.bg.green = 128
-mode_indicator_settings.bg.red = 0
-mode_indicator_settings.bg.visible = true
-mode_indicator_settings.padding = 2
-mode_indicator_settings.text = {}
-mode_indicator_settings.text.font = "MS UI Gothic"
-mode_indicator_settings.text.size = 12
-ModeIndicator.text = require("texts").new(mode_indicator_settings, defaults)
+local zone = {}
 
-ModeIndicator.activate_kana_mode = (function()
-    ModeIndicator.text:text("あ")
-    ModeIndicator.text:visible(true)
+zone.register_event = (function(name, func)
+    return callback.register(name, func)
 end)
 
-ModeIndicator.deactivate_kana_mode = (function()
-    ModeIndicator.text:text("A")
-    ModeIndicator.text:visible(true)
+zone.unregister_event = (function(name, id)
+    return callback.unregister(name, id)
 end)
 
-ModeIndicator.hide = (function()
-    ModeIndicator.text:visible(false)
+windower.register_event("outgoing chunk", function(id, original, modified, injected, blocked)
+    if (not blocked) then
+        -- crossing zone line
+        if (id == 0x05E) then
+            callback.execute("on leave")
+        end
+
+        -- warp request (NPC or Door/Gate/Homepoint/Waypoint)
+        if (id == 0x05C) then
+            callback.execute("on leave")
+        end
+
+        -- entering zone
+        if (id == 0x00C) then
+            callback.execute("on enter")
+        end
+    end
 end)
 
-ModeIndicator.show = (function()
-    ModeIndicator.text:visible(true)
-end)
-
-return ModeIndicator
+return zone
