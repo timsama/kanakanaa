@@ -30,6 +30,8 @@ local kanji_json = JSON.read("dict/kanji.json")
 
 local kanji = {}
 
+local KANJI_LIST_LIMIT = 30
+
 kanji.lookup_by_reading = (function(kana)
     if (#kana > 0 and kanji_json ~= nil) then
         local kanji_words = L{}
@@ -37,13 +39,13 @@ kanji.lookup_by_reading = (function(kana)
 
         for i=1,#kanji_json do
             local entry = kanji_json[i]
-            if (#kanji_words < 20) then
+            if (#kanji_words < KANJI_LIST_LIMIT) then
                 local is_typing = string.startswith(entry.kana, kana)
                 local has_typed = kanji.is_valid_conjugation(kana, entry)
                 if (is_typing or has_typed) then
                     if (#entry.kanji > 0) then
                         for j=1,#entry.kanji do
-                            if (#kanji_words < 20) then
+                            if (#kanji_words < KANJI_LIST_LIMIT) then
                                 local kanji_word = {}
                                 if (string.match(kana, entry.kana)) then
                                     kanji_word.text = string.gsub(kana, entry.kana, entry.kanji[j], 1)
