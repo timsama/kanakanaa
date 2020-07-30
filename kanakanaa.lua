@@ -23,7 +23,7 @@
 -- Addon description
 _addon.name = "KanaKanaa Japanese IME"
 _addon.author = "Tim Winchester"
-_addon.version = "0.1.4"
+_addon.version = "0.1.5"
 _addon.language = "english"
 _addon.commands = {"kanakanaa", "kkn"}
 
@@ -545,6 +545,14 @@ function set_chat_bar_width(width)
     return can_write
 end
 
+function set_locale(locale)
+    CONFIG.localefile = "keymap/" .. locale
+    jsonfiles.write("config/config.json", CONFIG)
+
+    -- re-acquire keymap since it will change based on locale
+    keymap = keymap.change_locale(CONFIG.localefile)
+end
+
 -- ON COMMAND
 windower.register_event("addon command", function(command, ...)
     local args = L{...}
@@ -563,6 +571,19 @@ windower.register_event("addon command", function(command, ...)
             else
                 windower.send_command("@input /echo " .. new_width .. " is not a valid width. (Allowed values: number or nil)")
             end
+        elseif (args[1] == "locale") then
+            set_locale(args[2])
+        end
+    elseif (command == "reset") then
+        if (args[1] == "all") then
+            set_chat_bar_width(nil)
+            Ui.set_chat_bar_width(nil)
+            set_locale("en-US")
+        elseif (args[1] == "chatbarwidth") then
+            set_chat_bar_width(nil)
+            Ui.set_chat_bar_width(nil)
+        elseif (args[1] == "locale") then
+            set_locale("en-US")
         end
     end
 end)

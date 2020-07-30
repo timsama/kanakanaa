@@ -51,5 +51,11 @@ Holding Shift while you type allows you to enter full-width "Japanese style" cap
 #### kkn set chatbarwidth
 This sets the width of the chat bar, and saves the change in your config file. Setting chatbarwidth to nil or null restores the default width.
 
+#### kkn set locale
+This sets the locale to use for your keyboard. Currently-supported locales are en-US and es-ES, but I'm always happy to merge pull requests to add new locales.
+
+#### kkn reset [chatbarwidth|locale|all]
+Resets the specified setting to its default value.
+
 ### Final Thoughts
 I've had a lot of fun working on this, and I hope that using it is just as enjoyable. 楽しんで下さい!
