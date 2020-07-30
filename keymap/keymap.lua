@@ -53,9 +53,27 @@ keymap[KEYS.C] = "c"
 keymap[KEYS.F] = "f"
 keymap[KEYS.V] = "v"
 -- punctuation
-keymap[KEYS.PERIOD] = "."
-keymap[KEYS.COMMA] = ","
-keymap[KEYS.HYPHEN] = "-"
+if (not KEYS.PERIOD_NEEDS_SHIFT) then
+    keymap[KEYS.PERIOD] = "."
+end
+if (not KEYS.COMMA_NEEDS_SHIFT) then
+    keymap[KEYS.COMMA] = ","
+end
+if (not KEYS.HYPHEN_NEEDS_SHIFT) then
+    keymap[KEYS.HYPHEN] = "-"
+end
+if (not KEYS.EXCLAMATION_POINT_NEEDS_SHIFT) then
+    keymap[KEYS.EXCLAMATION_POINT] = "!"
+end
+if (not KEYS.SLASH_NEEDS_SHIFT) then
+    keymap[KEYS.SLASH] = "/"
+end
+if (not KEYS.QUESTION_MARK_NEEDS_SHIFT) then
+    keymap[KEYS.QUESTION_MARK] = "?"
+end
+if (not KEYS.DOUBLE_QUOTATION_MARK_NEEDS_SHIFT) then
+    keymap[KEYS.DOUBLE_QUOTATION_MARK] = "\""
+end
 -- special
 keymap[KEYS.X] = "x"
 -- unused (but we still want to catch their input)
@@ -75,9 +93,35 @@ keymap[KEYS.ZERO] = "0"
 
 -- Shift-modified DirectInput key codes (the codes don't change, but the characters do)
 keymap.shiftmap = {}
-keymap.shiftmap[KEYS.EXCLAMATION_POINT] = "!"
-keymap.shiftmap[KEYS.QUESTION_MARK] = "?"
-keymap.shiftmap[KEYS.DOUBLE_QUOTATION_MARK] = "\""
+if (KEYS.PERIOD_NEEDS_SHIFT) then
+    keymap.shiftmap[KEYS.PERIOD] = "."
+end
+if (KEYS.COMMA_NEEDS_SHIFT) then
+    keymap.shiftmap[KEYS.COMMA] = ","
+end
+if (KEYS.HYPHEN_NEEDS_SHIFT) then
+    keymap.shiftmap[KEYS.HYPHEN] = "-"
+end
+if (KEYS.EXCLAMATION_POINT_NEEDS_SHIFT) then
+    keymap.shiftmap[KEYS.EXCLAMATION_POINT] = "!"
+end
+if (KEYS.SLASH_NEEDS_SHIFT) then
+    keymap.shiftmap[KEYS.SLASH] = "/"
+end
+if (KEYS.QUESTION_MARK_NEEDS_SHIFT) then
+    keymap.shiftmap[KEYS.QUESTION_MARK] = "?"
+end
+if (KEYS.DOUBLE_QUOTATION_MARK_NEEDS_SHIFT) then
+    keymap.shiftmap[KEYS.DOUBLE_QUOTATION_MARK] = "\""
+end
+
+keymap.get_key = function(keycode, shift_down)
+    if (shift_down) then
+        return keymap.shiftmap[keycode]
+    else
+        return keymap[keycode]
+    end
+end
 
 -- DirectInput key codes
 keymap.backspace = KEYS.BACKSPACE
@@ -91,7 +135,6 @@ keymap.up_arrow = KEYS.UP_ARROW
 keymap.down_arrow = KEYS.DOWN_ARROW
 keymap.left_arrow = KEYS.LEFT_ARROW
 keymap.right_arrow = KEYS.RIGHT_ARROW
-keymap.slash = KEYS.SLASH
 keymap.home = KEYS.HOME
 keymap["end"] = KEYS.END -- end is a reserved word in LUA, so we can't use dot notation
 keymap.delete = KEYS.DELETE
@@ -222,14 +265,29 @@ keymap.get_number = (function(keycode)
 end)
 
 local autotranslate_punctuation = {}
-autotranslate_punctuation[KEYS.SINGLE_QUOTATION_MARK] = "'"
+autotranslate_punctuation.shiftmap = {}
 
-keymap.is_autotranslate_punctuation = (function(keycode)
-    return autotranslate_punctuation[keycode] ~= nil
+if (not KEYS.SINGLE_QUOTATION_MARK_NEEDS_SHIFT) then
+    autotranslate_punctuation[KEYS.SINGLE_QUOTATION_MARK] = "'"
+else
+    autotranslate_punctuation.shiftmap[KEYS.SINGLE_QUOTATION_MARK] = "'"
+end
+
+
+keymap.is_autotranslate_punctuation = (function(keycode, shift_down)
+    if (shift_down) then
+        return autotranslate_punctuation.shiftmap[keycode] ~= nil
+    else
+        return autotranslate_punctuation[keycode] ~= nil
+    end
 end)
 
-keymap.get_autotranslate_punctuation = (function(keycode)
-    return autotranslate_punctuation[keycode]
+keymap.get_autotranslate_punctuation = (function(keycode, shift_down)
+    if (shift_down) then
+        return autotranslate_punctuation.shiftmap[keycode]
+    else
+        return autotranslate_punctuation[keycode]
+    end
 end)
 
 return keymap

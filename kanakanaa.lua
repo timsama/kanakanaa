@@ -23,7 +23,7 @@
 -- Addon description
 _addon.name = "KanaKanaa Japanese IME"
 _addon.author = "Tim Winchester"
-_addon.version = "0.1.3"
+_addon.version = "0.1.4"
 _addon.language = "english"
 _addon.commands = {"kanakanaa", "kkn"}
 
@@ -608,7 +608,7 @@ windower.register_event("keyboard", function(dik, pressed, flags, blocked)
     end
 
     -- allow game commands to be typed regardless of kana mode, but restore kana mode afterward if it's on
-    if (kana_mode and dik == keymap.slash and not shift_down) then
+    if (kana_mode and keymap.get_key(dik, shift_down) == "/") then
         should_restore_kana_mode_after_command = true
         kana_mode = false
         Ui.ModeIndicator.deactivate_kana_mode()
@@ -851,7 +851,7 @@ windower.register_event("keyboard", function(dik, pressed, flags, blocked)
 end)
 
 function handle_autotranslate(dik)
-    if (keymap.is_letter(dik) or keymap.is_autotranslate_punctuation(dik)) then
+    if (keymap.is_letter(dik) or keymap.is_autotranslate_punctuation(dik, shift_down)) then
         if (keystroke_buffer == AUTOTRANSLATE_MESSAGE) then
             keystroke_buffer = ""
         end
@@ -861,8 +861,8 @@ function handle_autotranslate(dik)
             keystroke_buffer = keystroke_buffer .. letter
         end
 
-        if (keymap.is_autotranslate_punctuation(dik)) then
-            local punct = keymap.get_autotranslate_punctuation(dik)
+        if (keymap.is_autotranslate_punctuation(dik, shift_down)) then
+            local punct = keymap.get_autotranslate_punctuation(dik, shift_down)
             keystroke_buffer = keystroke_buffer .. punct
         end
 
