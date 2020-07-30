@@ -42,10 +42,11 @@ windower.register_event("outgoing chunk", function(id, original, modified, injec
             callback.execute("on leave")
         end
 
-        -- warp request (NPC or Door/Gate/Homepoint/Waypoint)
-        if (id == 0x05C) then
-            callback.execute("on leave")
-        end
+        -- Temporarily commented out until I can determine why it doesn't come back after zoning
+        -- -- warp request (NPC or Door/Gate/Homepoint/Waypoint)
+        -- if (id == 0x05C) then
+        --     callback.execute("on leave")
+        -- end
 
         -- entering zone
         if (id == 0x00C) then

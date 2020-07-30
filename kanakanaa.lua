@@ -23,7 +23,7 @@
 -- Addon description
 _addon.name = "KanaKanaa Japanese IME"
 _addon.author = "Tim Winchester"
-_addon.version = "0.1.5"
+_addon.version = "0.1.6"
 _addon.language = "english"
 _addon.commands = {"kanakanaa", "kkn"}
 
